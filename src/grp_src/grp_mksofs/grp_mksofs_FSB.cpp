@@ -21,10 +21,9 @@ namespace sofs20
         sb.version = VERSION_NUMBER;
 
         sb.mntstat = 0;
-
-
         sb.ntotal = ntotal;
         sb.itotal = itotal;
+
         sb.dbp_start = (itotal/IPB) + 1;
         sb.dbtotal = dbtotal;
         sb.dbfree= sb.dbtotal-1;
@@ -32,24 +31,32 @@ namespace sofs20
         sb.ifree  =  itotal - 1;
         sb.iidx = 0;
 
-         
         sb.reftable.ref_idx=0;  //Index of first cell, within first block, with references
-        //sb.reftable.cnt = 
-
-
+        //sb.reftable.cnt = SÓ FALTA ESTE
         sb.insertion_cache.idx=0;   //index of the first empty insertion cache position
-        sb.retrieval_cache.idx=0;   //index of the first empty retrieval cache position
-        
 
-        sb.rt_start = (itotal/IPB) + dbtotal + 1; // por causa do 0
+        sb.rt_start = (itotal/IPB) + dbtotal + 1; // por causa do 0---> First block of the reference table
         sb.rt_size = ntotal - (itotal/IPB) - dbtotal - 1; // n de blocos da ref table
+
         
-        //falta a cache contents
-        for(int i = 0 ;i < REF_CACHE_SIZE ;i++){
-            sb.retrieval_cache.ref[i] = i + 1;
+        sb.retrieval_cache.idx= REF_CACHE_SIZE-1;
+        int valores = sb.rt_start;
+        int cache_cnt=ntotal-4;
 
+        for(int i =REF_CACHE_SIZE-1; i>=0; i--){
+            if(valores> REF_CACHE_SIZE+4){
+                 sb.retrieval_cache.ref[i] = i+1;
+                 sb.retrieval_cache.idx=0;   //Index of the first occupied retrieval cache position
+            }else{
+                if(i>=REF_CACHE_SIZE-(ntotal-4)){//para o caso da cache content não ser nil
+                    sb.retrieval_cache.ref[i]= cache_cnt;
+                    cache_cnt--;
+                }else{
+                    sb.retrieval_cache.ref[i]= BlockNullReference;
+                }
+                sb.retrieval_cache.idx=REF_CACHE_SIZE-(ntotal-4);
+            }
         }
-
         //inode allocation bitmap
         for(int i=0; i< MAX_INODES/32; i++){
             if(i==0){
