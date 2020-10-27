@@ -16,6 +16,14 @@ namespace sofs20
 
         /* replace the following line with your code */
         binResetFreeDataBlocks(ntotal, itotal, dbtotal);
+        
+        int start = (itotal / IPB) + 2 + dbtotal;       //  first free data block  
+        int end = ntotal - 1; 
+        int buffer[RPB] = {0};
+        
+        for(int i = start; i <= end; i++) {
+            soWriteRawBlock(i, buffer);
+        }
     }
 };
 
