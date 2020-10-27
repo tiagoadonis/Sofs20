@@ -15,7 +15,7 @@ namespace sofs20
         soProbe(607, "%s(%u, %u, %u)\n", __FUNCTION__, ntotal, itotal, dbtotal);
 
         /* replace the following line with your code */
-        binResetFreeDataBlocks(ntotal, itotal, dbtotal);
+        //binResetFreeDataBlocks(ntotal, itotal, dbtotal);
         
         int start = (itotal / IPB) + 2 + dbtotal;       //  first free data block  
         int end = ntotal - 1; 
