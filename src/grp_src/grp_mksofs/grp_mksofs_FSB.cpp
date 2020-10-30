@@ -42,18 +42,10 @@ namespace sofs20
         }else{
             sb.reftable.count=0;
         }
-            
-        
-
         
         sb.retrieval_cache.idx= REF_CACHE_SIZE-1;
         int valores = sb.rt_start;
         int cache_count=ntotal-4;
-
-
-
-
-
 
         for(int i =REF_CACHE_SIZE-1; i>=0; i--){
             if(valores> REF_CACHE_SIZE+4){
