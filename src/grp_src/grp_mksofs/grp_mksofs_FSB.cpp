@@ -19,7 +19,6 @@ namespace sofs20
 
         sb.magic = MAGIC_NUMBER;
         sb.version = VERSION_NUMBER;
-
         sb.mntstat = 0;
         sb.ntotal = ntotal;
         sb.itotal = itotal;
@@ -76,7 +75,6 @@ namespace sofs20
         }   
 
         soWriteRawBlock(0,&sb);
-
         /* replace the following line with your code */
        // binFillSuperblock(name, ntotal, itotal, dbtotal);
     }   
