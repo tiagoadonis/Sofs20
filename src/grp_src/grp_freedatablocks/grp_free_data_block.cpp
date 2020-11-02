@@ -22,15 +22,15 @@ namespace sofs20
     {
         soProbe(442, "%s(%u)\n", __FUNCTION__, bn);
 
-        SOSuperBlock* superBlockPointer = soGetSuperBlockPointer();
+        SOSuperblock* superBlockPointer = soGetSuperblockPointer();
 
 
         if(superBlockPointer->insertion_cache.idx == REF_CACHE_SIZE){
             soDepleteInsertionCache();
         }
 
-        superBlockPointer-> insertion_cache.idx++;
         superBlockPointer->insertion_cache.ref[superBlockPointer-> insertion_cache.idx] =bn;
+        superBlockPointer-> insertion_cache.idx++;
         superBlockPointer-> dbfree++;
         /* replace the following line with your code */
         //binFreeDataBlock(bn);   
