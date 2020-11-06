@@ -20,8 +20,23 @@ namespace sofs20
     {
         soProbe(606, "%s(%u)\n", __FUNCTION__, itotal);
 
+        SODirentry direntry[DPB];
+
+        strcpy(direntry[0].name, ".");
+        direntry[0].in = 0;
+
+        strcpy(direntry[1].name, "..");
+        direntry[1].in = 0;
+
+        for (unsigned long i = 2; i < DPB; i++){
+            strcpy(direntry[i].name, "");
+            direntry[i].in = 0x0;
+        }
+
+        soWriteRawBlock(itotal/IPB + 1, direntry);
+
         /* replace the following line with your code */
-        binFillRootDir(itotal);
+        // binFillRootDir(itotal);
     }
 };
 

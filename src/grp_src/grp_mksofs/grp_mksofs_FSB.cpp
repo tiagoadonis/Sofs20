@@ -19,7 +19,6 @@ namespace sofs20
 
         sb.magic = MAGIC_NUMBER;
         sb.version = VERSION_NUMBER;
-
         sb.mntstat = 0;
         sb.ntotal = ntotal;
         sb.itotal = itotal;
@@ -32,16 +31,20 @@ namespace sofs20
         sb.iidx = 0;
 
         sb.reftable.ref_idx=0;  //Index of first cell, within first block, with references
-        //sb.reftable.cnt = SÓ FALTA ESTE
         sb.insertion_cache.idx=0;   //index of the first empty insertion cache position
 
         sb.rt_start = (itotal/IPB) + dbtotal + 1; // por causa do 0---> First block of the reference table
         sb.rt_size = ntotal - (itotal/IPB) - dbtotal - 1; // n de blocos da ref table
-
+        
+        if(ntotal>=73){//1 sb +68(ref cache) + 4(inode table)
+            sb.reftable.count =dbtotal- REF_CACHE_SIZE-1;
+        }else{
+            sb.reftable.count=0;
+        }
         
         sb.retrieval_cache.idx= REF_CACHE_SIZE-1;
         int valores = sb.rt_start;
-        int cache_cnt=ntotal-4;
+        int cache_count=ntotal-4;
 
         for(int i =REF_CACHE_SIZE-1; i>=0; i--){
             if(valores> REF_CACHE_SIZE+4){
@@ -49,8 +52,8 @@ namespace sofs20
                  sb.retrieval_cache.idx=0;   //Index of the first occupied retrieval cache position
             }else{
                 if(i>=REF_CACHE_SIZE-(ntotal-4)){//para o caso da cache content não ser nil
-                    sb.retrieval_cache.ref[i]= cache_cnt;
-                    cache_cnt--;
+                    sb.retrieval_cache.ref[i]= cache_count;
+                    cache_count--;
                 }else{
                     sb.retrieval_cache.ref[i]= BlockNullReference;
                 }
@@ -72,7 +75,6 @@ namespace sofs20
         }   
 
         soWriteRawBlock(0,&sb);
-
         /* replace the following line with your code */
        // binFillSuperblock(name, ntotal, itotal, dbtotal);
     }   
