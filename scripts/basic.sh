@@ -79,4 +79,18 @@ function m()
 }
 
 # --------------------------------------------------------------------------
+# To test the deplete insertion cache function
+function tt-dic()
+{
+    for i in $(seq 1 68)
+    do
+        echo -ne "adb\nq\n" | tt -q1 -p0-0 -b
+    done
 
+    for db in $(seq 1 68)
+    do
+        echo -ne "fdb\n$db\nq\ne" | tt -q1 -p0-0 -b
+    done
+
+    echo -ne "dic\nq\n" | tt -q1 -p0-0 -b $@
+}
