@@ -94,3 +94,15 @@ function tt-dic()
 
     echo -ne "dic\nq\n" | tt -q1 -p0-0 -b $@
 }
+
+#----------------------------------------------------------------------------
+# To test the Replenish Retrieval cache
+function tt-rrc()
+{
+    for i in $(seq 1 68)
+    do
+    	echo -ne "adb\nq\n" | tt -q1 -p0-0 -b
+    done
+    
+    echo -ne "rrc\nq\n" | tt -q1 -p0-0 -b $@
+}
