@@ -14,7 +14,18 @@ namespace sofs20
         soProbe(331, "%s(%d, %u, %p)\n", __FUNCTION__, ih, fbn, buf);
 
         /* replace the following line with your code */
-        binReadFileBlock(ih, fbn, buf);
+        // binReadFileBlock(ih, fbn, buf);
+
+        uint32_t block = soGetFileBlock(ih, fbn);
+
+        if (block == BlockNullReference) {
+            memset(buf,'\0',BlockSize);
+        }
+
+        else{
+            soReadDataBlock(block, buf);
+        }
+        
     }
 };
 
