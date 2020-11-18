@@ -164,6 +164,13 @@ function ttrrc()
 
         WarnMessage "NOT IMPLEMENTED YET"
         InfoMessage "$helpmsg"
+        
+        for i in $(seq 1 68)
+    do
+    	echo -ne "adb\nq\n" | tt -q1 -p0-0 -b
+    done
+    
+    echo -ne "rrc\nq\n" | tt -q1 -p0-0 -b $@
 }
 
 # --------------------------------------------------------------------------
