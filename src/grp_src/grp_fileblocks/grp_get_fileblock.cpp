@@ -51,8 +51,8 @@ namespace sofs20{
         uint32_t i1_idx = afbn / RPB;
         uint32_t ref_idx = afbn % RPB;
 
-        if (ip->i1[i1_idx] == NullReference) {
-            return NullReference;
+        if (ip->i1[i1_idx] == BlockNullReference) {
+            return BlockNullReference;
         }
 
         uint32_t ref[RPB];
@@ -72,14 +72,14 @@ namespace sofs20{
         uint32_t i1fdb_idx = (afbn / RPB) % RPB;
         uint32_t rdb_index = afbn % RPB % RPB;
 
-        if (ip->i2[i2_idx] == NullReference) {
-            return NullReference;
+        if (ip->i2[i2_idx] == BlockNullReference) {
+            return BlockNullReference;
         }
 
         uint32_t ref_i1[RPB];
         soReadDataBlock(ip->i2[i2_idx], &ref_i1);
-        if (ref_i1[i1fdb_idx] == NullReference) {
-            return NullReference;
+        if (ref_i1[i1fdb_idx] == BlockNullReference) {
+            return BlockNullReference;
         }
 
         uint32_t ref[RPB];
