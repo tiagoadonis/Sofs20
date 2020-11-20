@@ -21,10 +21,10 @@ namespace sofs20
 
         SOInode* pointer = soGetInodePointer(pih);
 
-        for(unsigned i=0; i<pointer->size/BlockSize; i++){
+        for(unsigned i=0; i<pointer->size/BlockSize; i++){ 
             SODirentry entries[DPB]; //array de entries
             soReadFileBlock(pih, i, entries);
-            for(unsigned j=0; j<DPB; j++){
+            for(unsigned j=0; j<DPB; j++){ //se o nome introduzido corresponder a algum nome do array de direntries
                 if(strcmp(entries[j].name, name) == 0){
                     return entries[j].in; //retorna o numero do inode associado a essa entrie
                 }else{
