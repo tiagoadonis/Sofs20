@@ -10,14 +10,26 @@
 #include <string.h>
 #include <sys/stat.h>
 
-namespace sofs20
-{
-    bool grpCheckDirEmpty(int ih)
-    {
+namespace sofs20{
+    bool grpCheckDirEmpty(int ih){
         soProbe(205, "%s(%d)\n", __FUNCTION__, ih);
 
         /* replace the following line with your code */
-        return binCheckDirEmpty(ih);
+        //return binCheckDirEmpty(ih);
+    
+        SOInode* in = soGetInodePointer(ih);
+	
+        for (unsigned i=0; i< in->size / BlockSize; i++) {
+            SODirentry entries[DPB];
+            soReadFileBlock(ih, i, entries);
+            for (unsigned j=2; j < DPB; j++) {
+                if (strcmp(entries[j].name, "\0") != 0) {
+                    return false;
+                }
+            }
+        }
+
+    	return true;
     }
 };
 
