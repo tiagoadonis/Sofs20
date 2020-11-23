@@ -20,19 +20,27 @@ namespace sofs20
         //return binGetDirentry(pih, name);
 
         SOInode* pointer = soGetInodePointer(pih);
+        SODirentry entries[DPB]; //array de entries
+        uint16_t n = 0;
 
-        for(unsigned i=0; i<pointer->size/BlockSize; i++){ 
-            SODirentry entries[DPB]; //array de entries
+        if(pointer -> size%BlockSize != 0){ //se o resto for != 0, quer dizer que os blocos nao estao 100% preenchidos
+            n = pointer->size/BlockSize + 1; //por isso o n toma o valor do proximo bloco (+1)
+        }else{
+            n = pointer -> size/BlockSize; //caso contrario, o n tem o valor normal
+        }
+
+        for(unsigned i=0; i < n; i++){
             soReadFileBlock(pih, i, entries);
-            for(unsigned j=0; j<DPB; j++){ //se o nome introduzido corresponder a algum nome do array de direntries
-                if(strcmp(entries[j].name, name) == 0){
-                    return entries[j].in; //retorna o numero do inode associado a essa entrie
-                }else{
-                    return BlockNullReference; //se nao encontrar nenhum com o mesmo nome retorna null
+            for(unsigned j=0; j<DPB; j++){
+                if(strcmp(entries[j].name, name) == 0){ //se o nome introduzido corresponder a algum nome do array de direntries
+                    return entries[j].in; //retorna o numero do child inode
                 }
             }
         }
-    return 0;
+
+        
+        
+        return InodeNullReference; //se nao encontrar nenhum com o mesmo nome retorna null
 
     }
 };
