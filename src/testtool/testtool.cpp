@@ -103,6 +103,7 @@ public:
         hdl["iilc"] = incInodeLnkcnt;
         hdl["dilc"] = decInodeLnkcnt;
         hdl["cog"] = changeInodeOwnership;
+        hdl["cio"] = changeInodeOwnership;
         /* fileblocks functions */
         hdl["afb"] = allocFileBlock;
         hdl["ffb"] = freeFileBlocks;
