@@ -46,7 +46,7 @@ namespace sofs20
         int valores = sb.rt_start;
         int cache_count=ntotal-4;
 
-        for(int i =REF_CACHE_SIZE-1; i>=0; i--){
+        for(unsigned i =REF_CACHE_SIZE-1; i>=0; i--){
             if(valores> REF_CACHE_SIZE+4){
                  sb.retrieval_cache.ref[i] = i+1;
                  sb.retrieval_cache.idx=0;   //Index of the first occupied retrieval cache position
