@@ -47,14 +47,9 @@ void printBits(size_t const size, void const * const ptr)
 
         SOSuperblock* sbp = soGetSuperblockPointer();
 
-        uint32_t perm = mode & 0777;
         uint32_t type = mode & ~0777;
 
         if(!(type == S_IFREG || type == S_IFDIR || type == S_IFLNK)){
-            throw SOException(EINVAL, __FUNCTION__);
-        }
-
-        if(perm < 0000 || perm > 0777){
             throw SOException(EINVAL, __FUNCTION__);
         }
 
@@ -62,7 +57,7 @@ void printBits(size_t const size, void const * const ptr)
             throw SOException(ENOSPC, __FUNCTION__);
         }
 
-        uint32_t inode_id = sbp->iidx+1;
+        uint16_t inode_id = sbp->iidx+1;
         int inode_handler = soOpenInode(inode_id);
         SOInode* inodep = soGetInodePointer(inode_handler);
 
@@ -97,22 +92,23 @@ void printBits(size_t const size, void const * const ptr)
 
             if (bit == 0)
             {
-                // printf("\nentrei");
                 (sbp->ibitmap[i]) = (sbp->ibitmap[i]) | (1<<posicao);
                 // printf("\nconteudo binario do bitmap[%d]: ", i);
                 // printBits(sizeof(sbp->ibitmap[i]), &sbp->ibitmap[i]);
                 sbp->ifree = sbp->ifree - 1;
+                (sbp->iidx) = (sbp->iidx+1)%(sbp->itotal);
             }
             
             n = (n+1)%(sbp->itotal);
+
             // printf("n: %d\n", n);
         }
         
         soSaveInode(inode_handler);
         soSaveSuperblock();
 
-        printf("\nconteudo binario do bitmap[%d]: ", i);
-        printBits(sizeof(sbp->ibitmap[i]), &sbp->ibitmap[i]);
+        // printf("\nconteudo binario do bitmap[%d]: ", i);
+        // printBits(sizeof(sbp->ibitmap[i]), &sbp->ibitmap[i]);
         
         return inode_id;
     }
