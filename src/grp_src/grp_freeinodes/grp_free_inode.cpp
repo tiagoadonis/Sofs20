@@ -22,8 +22,60 @@ namespace sofs20
     {
         soProbe(402, "%s(%u)\n", __FUNCTION__, in);
 
+        /*if(...){   // TODO
+            throw SOException(EINVAL, __FUNCTION__);
+        }*/
+
+        SOSuperblock* sbp = soGetSuperblockPointer();
+        int inode_handler = soOpenInode(in);
+        SOInode* inodep = soGetInodePointer(inode_handler);
+
+        inodep->mode = 0; // TOCHECK
+        inodep->lnkcnt = 0;
+        inodep->owner = 0;
+        inodep->group = 0;
+        inodep->size = 0;
+        inodep->blkcnt = 0;
+        inodep->atime = 0;
+        inodep->mtime = 0;
+        inodep->ctime = 0;
+
+        for (int i = 0; i < N_DIRECT; i++){
+            inodep->d[i] = BlockNullReference;
+        }
+        for (int i = 0; i < N_INDIRECT; i++){
+            inodep->i1[i] = BlockNullReference;
+        }
+        for (int i = 0; i < N_DOUBLE_INDIRECT; i++){
+            inodep->i2[i] = BlockNullReference;
+        }
+
+        uint32_t bit = 0;
+        uint32_t n = (sbp->iidx+1)%(sbp->itotal);
+        uint32_t i;
+        
+        // TOCHECK
+        while (bit!=1){
+            i = n/32; // indice do bitmap
+
+            uint32_t posicao = n%32; // posição do bit (0-31)
+
+            bit = (sbp->ibitmap[i]) & (0<<posicao);
+
+            if (bit == 1){
+                (sbp->ibitmap[i]) = (sbp->ibitmap[i]) | (0<<posicao);
+                sbp->ifree = sbp->ifree + 1;
+            }
+            
+            n = (n+1)%(sbp->itotal);
+        }
+        // end TOCHECK
+
+        soSaveInode(inode_handler);
+        soSaveSuperblock();
+
         /* replace the following line with your code */
-        binFreeInode(in);
+        // binFreeInode(in);
     }
 };
 
