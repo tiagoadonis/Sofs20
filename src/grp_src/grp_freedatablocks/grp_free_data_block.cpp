@@ -32,8 +32,11 @@ namespace sofs20
         superBlockPointer->insertion_cache.ref[superBlockPointer-> insertion_cache.idx] =bn;
         superBlockPointer-> insertion_cache.idx++;
         superBlockPointer-> dbfree++;
+
+        soSaveSuperblock ();
         /* replace the following line with your code */
         //binFreeDataBlock(bn);   
+
     }
 };
 
