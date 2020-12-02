@@ -36,24 +36,16 @@ namespace sofs20
         sb.rt_start = (itotal/IPB) + dbtotal + 1; // por causa do 0---> First block of the reference table
         sb.rt_size = ntotal - (itotal/IPB) - dbtotal - 1; // n de blocos da ref table
         
-        if(ntotal>=73){//1 sb +68(ref cache) + 4(inode table)
-            sb.reftable.count =dbtotal- REF_CACHE_SIZE-1;
-        }else{
-            sb.reftable.count=0;
-        }
-
         //inicialização dos dados da retrieval cache
         if(sb.dbfree <= REF_CACHE_SIZE)
         {
             sb.reftable.blk_idx = 0;
             sb.reftable.count = 0;
-            sb.reftable.ref_idx = 0;
             sb.retrieval_cache.idx = REF_CACHE_SIZE - sb.dbfree;
         }else{
             sb.reftable.blk_idx = 0;
-            sb.reftable.ref_idx = 0;
-            uint32_t total_remaining_data_blocks = (sb.dbfree - REF_CACHE_SIZE);
-            sb.reftable.count = total_remaining_data_blocks;
+            uint32_t db_restantes = (sb.dbfree - REF_CACHE_SIZE);
+            sb.reftable.count = db_restantes;
             sb.retrieval_cache.idx = 0;
         }
 
