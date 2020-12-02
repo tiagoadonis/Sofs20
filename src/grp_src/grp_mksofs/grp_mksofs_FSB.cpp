@@ -41,35 +41,42 @@ namespace sofs20
         }else{
             sb.reftable.count=0;
         }
-        
-        sb.retrieval_cache.idx= REF_CACHE_SIZE-1;
-        int valores = sb.rt_start;
-        int cache_count=ntotal-4;
 
-        for(unsigned i =REF_CACHE_SIZE-1; i>=0; i--){
-            if(valores> REF_CACHE_SIZE+4){
-                 sb.retrieval_cache.ref[i] = i+1;
-                 sb.retrieval_cache.idx=0;   //Index of the first occupied retrieval cache position
+        //inicialização dos dados da retrieval cache
+        if(sb.dbfree <= REF_CACHE_SIZE)
+        {
+            sb.reftable.blk_idx = 0;
+            sb.reftable.count = 0;
+            sb.reftable.ref_idx = 0;
+            sb.retrieval_cache.idx = REF_CACHE_SIZE - sb.dbfree;
+        }else{
+            sb.reftable.blk_idx = 0;
+            sb.reftable.ref_idx = 0;
+            uint32_t total_remaining_data_blocks = (sb.dbfree - REF_CACHE_SIZE);
+            sb.reftable.count = total_remaining_data_blocks;
+            sb.retrieval_cache.idx = 0;
+        }
+
+        //Preenchimento da retrieval cache
+        uint32_t first_data_block_index = 1;
+        for(uint32_t i = 0; i < REF_CACHE_SIZE; i++)
+        {
+            if(i < sb.retrieval_cache.idx){
+                sb.retrieval_cache.ref[i] = BlockNullReference;
             }else{
-                if(i>=REF_CACHE_SIZE-(ntotal-4)){//para o caso da cache content não ser nil
-                    sb.retrieval_cache.ref[i]= cache_count;
-                    cache_count--;
-                }else{
-                    sb.retrieval_cache.ref[i]= BlockNullReference;
-                }
-                sb.retrieval_cache.idx=REF_CACHE_SIZE-(ntotal-4);
+                sb.retrieval_cache.ref[i] = first_data_block_index++;
             }
         }
+
         //inode allocation bitmap
         for(int i=0; i< MAX_INODES/32; i++){
             if(i==0){
                 sb.ibitmap[i]=1;
-            }
-            else{
+            }else{
                 sb.ibitmap[i]=0;
             }
         }
-
+        //preenchimento da insertition cache
         for(int i=0; i<REF_CACHE_SIZE; i++){
             sb.insertion_cache.ref[i] = BlockNullReference;
         }   
