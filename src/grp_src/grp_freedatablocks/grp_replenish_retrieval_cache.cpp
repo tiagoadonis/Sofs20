@@ -21,6 +21,43 @@ namespace sofs20
 
         /* replace the following line with your code */
         binReplenishRetrievalCache();
+
+
+        SOSuperblock* sb = soGetSuperblockPointer();
+
+        if(sb->retrieval_cache.idx  == REF_CACHE_SIZE - 1) {
+            return ;
+        }  
+
+        // Uses the reference table
+        if(sb->reftable.count != 0) {
+            uint32_t* rfdb = soGetReferenceBlockPointer(sb->reftable.blk_idx);
+        
+            while(sb->reftable.ref_idx < REF_CACHE_SIZE) {
+                sb->retrieval_cache.ref[sb->retrieval_cache.idx;--] = rfdb[sb->reftable.ref_idx];
+                rfdb[sb->reftable.ref_idx++] = BlockNullReference;
+            }
+            soSaveReferenceBlock();
+
+            sb->rt_size--;
+            sb->reftable.count--;
+        }
+
+        // Uses the Insertion Cache
+        else {
+
+            if(sb->insertion_cache.idx == 0) {
+                    throw SOException(ENOSPC, __FUNCTION__); 
+            }
+
+            // Gets all 64 references from de Insertion cache
+            while(sb->insertion_cache.idx > 0 and sb->retrieval_cache.idx > 0) {
+                    sb->retrieval_cache.ref[--sb->retrieval_cache.idx] = sb->insertion_cache.ref[--sb->insertion_cache.idx];
+                    sb->insertion_cache.ref[sb->insertion_cache.idx] == BlockNullReference;
+            }
+        }
+
+        soSaveSuperblock();
     }
 };
 
