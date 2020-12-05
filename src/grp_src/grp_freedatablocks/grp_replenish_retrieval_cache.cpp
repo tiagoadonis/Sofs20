@@ -20,7 +20,7 @@ namespace sofs20
         soProbe(443, "%s()\n", __FUNCTION__);
 
         /* replace the following line with your code */
-        binReplenishRetrievalCache();
+        //binReplenishRetrievalCache();
 
 
         SOSuperblock* sb = soGetSuperblockPointer();
@@ -33,16 +33,16 @@ namespace sofs20
         if(sb->reftable.count != 0) {
             uint32_t* rfdb = soGetReferenceBlockPointer(sb->reftable.blk_idx);
         
-            while(sb->reftable.ref_idx < REF_CACHE_SIZE) {
-                sb->retrieval_cache.ref[sb->retrieval_cache.idx;--] = rfdb[sb->reftable.ref_idx];
-                rfdb[sb->reftable.ref_idx++] = BlockNullReference;
+            for(unsigned int i=0; i<REF_CACHE_SIZE; i++){
+                sb->retrieval_cache.ref[i] = rfdb[sb->reftable.ref_idx];    //1ª posição da retrieval cache vai ser 69 70 71 e por aí em diante
+                rfdb[sb->reftable.ref_idx] = BlockNullReference;            // a posição 69 , 70 ,71... do bloco da reference table vai ser block null reference     
+                sb->reftable.ref_idx++;
+                
             }
+            sb->retrieval_cache.idx = 0;    //Index of the first empty cache position volta a ser 0!
+            sb->reftable.count -= REF_CACHE_SIZE;
             soSaveReferenceBlock();
-
-            sb->rt_size--;
-            sb->reftable.count--;
         }
-
         // Uses the Insertion Cache
         else {
 
@@ -52,8 +52,10 @@ namespace sofs20
 
             // Gets all 64 references from de Insertion cache
             while(sb->insertion_cache.idx > 0 and sb->retrieval_cache.idx > 0) {
-                    sb->retrieval_cache.ref[--sb->retrieval_cache.idx] = sb->insertion_cache.ref[--sb->insertion_cache.idx];
+                    sb->retrieval_cache.ref[sb->retrieval_cache.idx] = sb->insertion_cache.ref[sb->insertion_cache.idx];
                     sb->insertion_cache.ref[sb->insertion_cache.idx] == BlockNullReference;
+                    sb->retrieval_cache.idx--;
+                    sb->insertion_cache.idx--;
             }
         }
 
