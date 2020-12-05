@@ -53,7 +53,7 @@ namespace sofs20
             // Gets all 64 references from de Insertion cache
             while(sb->insertion_cache.idx > 0 and sb->retrieval_cache.idx > 0) {
                     sb->retrieval_cache.ref[sb->retrieval_cache.idx] = sb->insertion_cache.ref[sb->insertion_cache.idx];
-                    sb->insertion_cache.ref[sb->insertion_cache.idx] == BlockNullReference;
+                    sb->insertion_cache.ref[sb->insertion_cache.idx] = BlockNullReference;
                     sb->retrieval_cache.idx--;
                     sb->insertion_cache.idx--;
             }
