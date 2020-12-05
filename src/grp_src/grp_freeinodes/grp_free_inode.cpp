@@ -22,15 +22,17 @@ namespace sofs20
     {
         soProbe(402, "%s(%u)\n", __FUNCTION__, in);
 
-        /*if(...){   // TODO
+        // TODO: Throw EINVAL exception if inode number is not valid
+        /*if(...){
             throw SOException(EINVAL, __FUNCTION__);
         }*/
+        // end TODO
 
         SOSuperblock* sbp = soGetSuperblockPointer();
-        int inode_handler = soOpenInode(in);
-        SOInode* inodep = soGetInodePointer(inode_handler);
+        int pih = soOpenInode(in);
+        SOInode* inodep = soGetInodePointer(pih);
 
-        inodep->mode = 0; // TOCHECK
+        inodep->mode = 0;
         inodep->lnkcnt = 0;
         inodep->owner = 0;
         inodep->group = 0;
@@ -50,15 +52,15 @@ namespace sofs20
             inodep->i2[i] = BlockNullReference;
         }
 
+        // TOCHECK: The corresponding bit of the ibitmap field is put at zero
         uint32_t bit = 0;
-        uint32_t n = (sbp->iidx+1)%(sbp->itotal);
+        uint32_t n = (sbp->iidx)%(sbp->itotal);
         uint32_t i;
         
-        // TOCHECK
         while (bit!=1){
-            i = n/32; // indice do bitmap
+            i = n/32; // ibitmap index
 
-            uint32_t posicao = n%32; // posição do bit (0-31)
+            uint32_t posicao = n%32; // bit position (0-31)
 
             bit = (sbp->ibitmap[i]) & (0<<posicao);
 
@@ -71,7 +73,7 @@ namespace sofs20
         }
         // end TOCHECK
 
-        soSaveInode(inode_handler);
+        soSaveInode(pih);
         soSaveSuperblock();
 
         /* replace the following line with your code */
