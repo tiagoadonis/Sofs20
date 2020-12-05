@@ -50,10 +50,13 @@ void printBits(size_t const size, void const * const ptr)
         uint32_t type = mode & ~0777;
 
         if(!(type == S_IFREG || type == S_IFDIR || type == S_IFLNK)){
+            printf("\nerro1");
             throw SOException(EINVAL, __FUNCTION__);
         }
 
         if(sbp->ifree == 0){
+            printf("\nerro2");
+            sbp->iidx=1;
             throw SOException(ENOSPC, __FUNCTION__);
         }
 
@@ -69,7 +72,7 @@ void printBits(size_t const size, void const * const ptr)
         inodep->mtime = time(NULL);
         
         uint32_t bit = 1;
-        uint32_t n = (sbp->iidx+1)%(sbp->itotal);
+        uint32_t n = (sbp->iidx)%(sbp->itotal);
         uint32_t i;
         
         while (bit!=0)
@@ -78,10 +81,10 @@ void printBits(size_t const size, void const * const ptr)
             // printf("\nindice do bitmap: %d", i);
 
             uint32_t posicao = n%32; // posição do bit (0-31)
-            // printf("\nposição do bit (0-31): %d", posicao);
+            printf("\nposição do bit (0-31): %d", posicao);
 
-            // printf("\nconteudo binario do bitmap[%d]: ", i);
-            // printBits(sizeof(sbp->ibitmap[i]), &sbp->ibitmap[i]);
+            printf("\nconteudo binario do bitmap[%d]: ", i);
+            printBits(sizeof(sbp->ibitmap[i]), &sbp->ibitmap[i]);
 
             // printf("conteudo hexa do bitmap[%d]: %x", i, sbp->ibitmap[i]);
             // printf("\n(1<<posicao): %d", (1<<posicao));
@@ -96,7 +99,8 @@ void printBits(size_t const size, void const * const ptr)
                 // printf("\nconteudo binario do bitmap[%d]: ", i);
                 // printBits(sizeof(sbp->ibitmap[i]), &sbp->ibitmap[i]);
                 sbp->ifree = sbp->ifree - 1;
-                (sbp->iidx) = (sbp->iidx+1)%(sbp->itotal);
+                (sbp->iidx) = ((32*i)+posicao)%(sbp->itotal);
+                printf("\niidx: %d", (sbp->iidx));
             }
             
             n = (n+1)%(sbp->itotal);
@@ -107,8 +111,8 @@ void printBits(size_t const size, void const * const ptr)
         soSaveInode(inode_handler);
         soSaveSuperblock();
 
-        // printf("\nconteudo binario do bitmap[%d]: ", i);
-        // printBits(sizeof(sbp->ibitmap[i]), &sbp->ibitmap[i]);
+        printf("\nconteudo binario do bitmap[%d]: ", i);
+        printBits(sizeof(sbp->ibitmap[i]), &sbp->ibitmap[i]);
         
         return inode_id;
     }
