@@ -25,13 +25,13 @@ namespace sofs20
 
         SODirentry entries[DPB];
 
-        printf("name: %s", name);
-        printf("\nnewName: %s", newName);
+        // printf("name: %s", name);
+        // printf("\nnewName: %s", newName);
         
 
         for (uint32_t i = 0; i < pin->size/sizeof(SODirentry); i++) {
 
-            printf("\nentries[i].name: %s", entries[i].name);
+            // printf("\nentries[i].name: %s", entries[i].name);
             
             if (i % DPB == 0)
             {
